@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-import { getImgFromVideo } from "./utils/index";
-let canvas: any = null;
-let videoFrames: any = null;
-onMounted(() => {
-  canvas = document.getElementById("prevImgCanvas") as HTMLCanvasElement;
-  videoFrames = document.querySelector(
-    ".upload-frame-group"
-  ) as HTMLVideoElement;
-});
+import { initVideo } from "./utils/index";
+
 const loadSnippetThumb = function (event: Event) {
   if (!event || !event.target) {
     return;
@@ -18,44 +10,11 @@ const loadSnippetThumb = function (event: Event) {
     return;
   }
   const url = URL.createObjectURL(target.files[0]);
-  let video = document.createElement("video");
-  video.src = url;
-  video.autoplay = true;
-  video.addEventListener(
-    "loadeddata",
-    function () {
-      renderFrames();
-    },
-    false
-  );
-  // 渲染视频的每一秒一帧
-  async function renderFrames() {
-    if (!isNaN(video.duration)) {
-      var context = canvas.getContext("2d");
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      for (let i = 1; i < video.duration; i++) {
-        video.currentTime = i;
-        let src = await seek();
-        let img = new Image();
-        img.src = src;
-        videoFrames.appendChild(img);
-        video.removeEventListener("seeked", getFrame.bind(null, null));
-      }
-    }
-  }
-
-  function getFrame(resolve: Function | null) {
-    if (resolve) {
-      let src = getImgFromVideo(video);
-      resolve(src);
-    }
-  }
-
-  function seek() {
-    return new Promise<string>((resolve, reject) => {
-      video.addEventListener("seeked", getFrame.bind(null, resolve));
-    });
-  }
+  let canvas = document.getElementById("prevImgCanvas") as HTMLCanvasElement;
+  let videoFrames = document.querySelector(
+    ".upload-frame-group"
+  ) as HTMLDivElement;
+  initVideo(url, canvas, videoFrames);
 };
 </script>
 

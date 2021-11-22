@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import UploadVideo from "./UploadVideo.vue";
+import OnlineVideo from "./OnlineVideo.vue";
 </script>
 
 <template>
   <div>
     <UploadVideo />
+  </div>
+  <div>
+    <OnlineVideo />
   </div>
 </template>
 
